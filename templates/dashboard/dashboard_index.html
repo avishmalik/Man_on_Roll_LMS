@@ -1,0 +1,301 @@
+{% extends '_layout.html' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script> -->
+
+  {% block stylesheet %}
+    
+
+     .sec-box{
+     <!-- width:400px; --><!-- dont uncomment this code - line -->
+     height:160px;
+     max-width:100%;
+     line-height:160px;
+     text-align:center;
+     position:relative;
+     
+     font-size:1.9rem;
+
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+    transition: all 400ms ease-in;
+
+    font-variant: petite-caps;
+ }
+
+.sec-box a{
+ color:#fff;
+ text-decoration:none;
+	
+}
+
+
+ .employee-box{
+ 	background:#41b6d6;
+}
+
+
+ .leave-box{
+ 	background:#fff;
+
+}
+
+.leave-box a{
+	color:#3ea7c7 !important;
+}
+
+
+ .birthday-box{
+ 	background:#8664ad;
+}
+
+.company-box{
+	background:#868686;
+}
+
+
+.count-object {
+    position: absolute;
+    top: 40%;
+    right: 12px;
+    font-size: 29px;
+    font-weight: 100;
+    font-variant: petite-caps;
+    color: #f5f5f5;
+    text-shadow:1px 1px rgba(8, 8, 8, 0.23);
+}
+
+
+     
+  {% endblock %}
+
+  
+
+ <!--CONTENTS-->
+ {% block content %}
+    <body style="background-color:whitesmoke">
+        <section class="content">
+            <section class="container-fluid">
+
+            	<section class="row">
+            		{% if request.user.is_supervisor or request.user.is_shop_incharge %}
+            		<section class="col col-lg-6 text-center">
+            			<div class="employee-box sec-box">
+            				<a href="{% url 'dashboard:employees' %}">
+            				<span class = "btn w3-xxlarge btn-outline-primary">M O R <sub>({{num}})</sub></span>
+            				</a>
+            				<!-- <span class="count-object">{{ employees.count }}</span>  -->
+            			</div>
+            		</section>
+            		<section class="col col-lg-6 text-center">
+            			<div class="leave-box sec-box">
+            				<a href="{% url 'dashboard:leaveslist' %}">
+            				<span class = "btn w3-xxlarge btn-outline-success">Leaves</span>
+            				</a>
+                            <!-- <span class="count-object" style="color:#41b6d6;">{{ leaves.count }}</span>  -->
+            			</div>
+            		</section>
+                {% endif %}
+
+            	</section>
+              
+              
+                <div class="mt-5 pt-5">
+                <table class="table">
+                    <thead class = "table-dark ">
+                      {% if request.user.is_shop_incharge %}
+                      <div class="dropdown mb-4">
+                        <button class="btn btn-outline-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                          {% if line != 'x' %}
+                            {{line}}
+                            {% else %}
+                            ALL LINES
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark" style="max-height: 280px;overflow-y: auto;" aria-labelledby="dropdownMenuButton1">
+                          <li><a class="dropdown-item" href="{% url 'dashboard:dashboard' %}">ALL LINES</a></li>
+                          {% for line in lines %}
+                          <li><a class="dropdown-item" href="{% url 'dashboard:linedashboard' line.Ticket_No %}">{{line.Cost_Center_Name}}</a></li>
+                          {% endfor %}
+                          
+                        </ul>
+                        <section class="row" style="text-align:center">
+                          <section class="col col-lg-12">
+                            {% if line != 'x' %}
+                            <span style="color:rgb(0, 53, 81);font-size:1.8em" >{{line}}</span>
+                            {% else %}
+                            <span style="color:rgb(0, 53, 81);font-size:1.8em">ALL LINES</span>
+                            {% endif %}
+                          </section>
+                          </section>
+                        </section>
+                      </div>
+                      
+                      {% endif %}
+                      {% if request.user.is_supervisor %}
+                      <section class="row" style="text-align:center">
+                        <section class="col col-lg-12 mb-3">
+                          <span style="color:rgb(0, 53, 81);font-size:1.8em" >{{request.user.Current_Shop}} - {{request.user.Cost_Center_Name}}</span>
+                        </section>
+                        </section>
+                      </section>
+                      {% endif %}
+                      <tr>
+                        <th scope="col">Status</th>
+                        {% for date in date_list %}
+                        <th scope="col">{{ date }}</th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="table-success">
+                        <th scope="row">Approved</th>
+                        {% for approve in approved_list %}
+                        {% if approve == 'HOLIDAY' %}
+                        <td style="background-color:rgb(239, 104, 104)">{{approve}}</td>
+                        {% else %}
+                        <td>{{approve}}</td>
+                        {% endif %}
+                        {% endfor %}
+                      </tr>
+                      <tr class="table" style="background-color:rgb(135, 168, 235)">
+                        <th scope="row">Absenteeism</th>
+
+                        {% if mp1.0 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.0}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave1" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day1}}%</p>
+                        </td>
+                        {% endif %}
+                        {% if mp1.1 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.1}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave2" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day2}}%</p>
+                        </td>
+                        {% endif %}
+                        {% if mp1.2 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.2}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave3" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day3}}%</p>
+                        </td>
+                        {% endif %}
+                        {% if mp1.3 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.3}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave4" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day4}}%</p>
+                        </td>
+                        {% endif %}
+                        {% if mp1.4 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.4}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave5" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day5}}%</p>
+                        </td>
+                        {% endif %}
+                        {% if mp1.5 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.5}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave6" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day6}}%</p>
+                        </td>
+                        {% endif %}
+                        {% if mp1.6 == 'HOLIDAY' %}
+                        <td style="background-color:rgb(245, 153, 153)">{{mp2.6}}</td>
+                        {% else %}
+                        <td>
+                          <div class="progress">
+                            <div id="leave7" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+                          </div>
+                          <p>{{day7}}%</p>
+                        </td>
+                        {% endif %}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </section> <!-- /container -->   
+            <script>
+              var a = '{{day1}}';
+              var temp1 = a + '%';
+              var b = '{{day2}}';
+              var temp2 = b + '%';
+              var c = '{{day3}}';
+              var temp3 = c + '%';
+              var d = '{{day4}}';
+              var temp4 = d + '%';
+              var e = '{{day5}}';
+              var temp5 = e + '%';
+              var f = '{{day6}}';
+              var temp6 = f + '%';
+              var g = '{{day7}}';
+              var temp7 = g + '%';
+            
+              $(document).ready(function() {
+                $('#leave1').css('width',temp1);
+                $('#leave1').attr('aria-valuenow',a);
+                $('#leave2').css('width',temp2);
+                $('#leave2').attr('aria-valuenow',b);
+                $('#leave3').css('width',temp3);
+                $('#leave3').attr('aria-valuenow',c);
+                $('#leave4').css('width',temp4);
+                $('#leave4').attr('aria-valuenow',d);
+                $('#leave5').css('width',temp5);
+                $('#leave5').attr('aria-valuenow',e);
+                $('#leave6').css('width',temp6);
+                $('#leave6').attr('aria-valuenow',f);
+                $('#leave7').css('width',temp7);
+                $('#leave7').attr('aria-valuenow',g);
+              });
+            </script> 
+        </section>
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+    </body>
+ {% endblock %}
+
+{% block extrajs%}
+    
+
+
+    $(document).ready(function(){
+          var get_login_user = '{{request.user.Complete_Name}}'
+          
+          console.log(get_login_user);
+
+          demo.initChartist();
+
+          $.notify({
+              icon: 'fa fa-user',
+              message: "Welcome to M O R LMS ,"+get_login_user
+
+            },{
+                type: 'info',
+                timer: 4000
+            });
+
+      });
+
+{% endblock %}

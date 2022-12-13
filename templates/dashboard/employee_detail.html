@@ -1,0 +1,266 @@
+
+{% extends '_layout.html' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% load humanize %}
+
+ {% block navheader %}
+ 	{% include 'includes/navbar.html' %}
+ {% endblock %}
+
+
+ 
+  {% block stylesheet %}
+  	.rounded-circle-image{
+  	border-radius: 50% !important;
+  	width:250px;
+  	height:250px;
+  }
+
+  .profile-wrapper{
+  background:#fff;
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+
+  padding-top: 10px;
+
+}
+
+
+.list-group {
+	margin-top: 10px;
+}
+
+span{
+	color: #c7c7c7;
+  font-weight: lighter;
+  font-size: 14px;
+}
+
+
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    font-size:17px;
+}
+
+  #override-start{
+    background:none !important;
+    top: 35% !important;
+    right:13px;
+    color:#000;
+    font-size: 24px;
+
+    }
+
+    .alert-warning{
+        background:#fd7b7b;
+    }
+
+    .alert-success {
+        background-color: #82b72a;
+    }
+
+    .alert-success,.alert-warning{
+        font-size:16px;
+    }
+
+    .employee-name-title{
+    color: #3873b1;
+    font-weight: 600;
+    font-variant: petite-caps;
+    font-size: 3.1rem !important;
+  }
+
+  span,.list-group-item > div{
+  font-variant: petite-caps;
+}
+
+
+.panel-default>.panel-heading {
+    color: #fff !important;
+    background-color: #2d88a9 !important;
+}
+
+.panel-title a:hover{
+  color:#e6e4e4;
+}
+
+.panel-title a:active{
+  color:#e6e4e4;
+}
+
+.panel-title a:focus{
+  color:#e6e4e4;
+}
+
+
+
+
+
+{% endblock %}<!-- STYLESHEETS -->
+
+
+
+
+        <!--CONTENTS-->
+ {% block content %}
+        <class class="content">
+            <section class="container-fluid center">
+              <section class="row">
+                <section class="col col-lg-12">
+                  <span><a href="{{request.META.HTTP_REFERER|escape}}" class = "btn btn-danger btn-sm">Back</a></span>
+                </section>
+              </section>
+                      <section class="row">
+                        <section class="col col-lg-12 col-md-12  col-sm-12">
+                            {% if  messages %}
+                                    {% for message in messages %}
+                                     <div {% if message.tags %} class="{{ message.tags}}"{% endif %}>
+                                         {{ message }}
+                                         
+                                         <!-- <button type="button" class="close" id = "override-start"data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                         </button> -->
+                                     </div>
+                                    {% endfor %}
+                            {% endif %}
+
+                        </section>
+                    </section>
+            		<section class="row">
+            			<section class="text-center">
+            				<h3><span class="employee-name-title">{{ employee.Complete_Name}}</span></h3>
+            			</section>
+            		</section>
+                
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Ticket No.</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Current Shop</th>
+                      <th scope="col">Line</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">{{ employee.Ticket_No }}</th>
+                      <td>{{ employee.Complete_Name }}</td>
+                      <td>{{ employee.Current_Shop}}</td>
+                      <td>{{ employee.Cost_Center_Name}}</td>
+                      <td>{% if employee.is_active %}
+                        <span class="badge alert-success">Active</span></li>
+                        {% else %}
+                        <span class="badge alert-danger">Inactive</span></li>
+                        {% endif %}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Casual Leave Quota</th>
+                      <th scope="col">Privilege Leave Quota</th>
+                      <th scope="col">Sick Leave Quota</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ quota.total_available_cl}} / {{ quota.total_assigned_cl}}</td>
+                      <td>{{ quota.total_available_pl}} / {{ quota.total_assigned_pl}}</td>
+                      <td>{{ quota.total_available_sl}} / {{ quota.total_assigned_sl}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+
+
+                	
+              
+
+              <div class="table-responsive table-shadow">
+                <div class="text-center table-description">
+                  <h4 class="title-h3" style="color: #60a0b3 !important;
+            text-shadow: 1px 0px rgba(0,0,0,0.11)">ALL LEAVES</h4>
+                </div>
+                <table class="table table-striped">
+                  <section class="row m-3" style="text-align:center">
+                    <section class="col col-lg-12">
+                      <span><a href= "{% url 'dashboard:sortedleaves' ticket %}" class = "btn btn-primary btn-sm">All Leaves</a></span>
+                                <span><a href= "{% url 'dashboard:personalapproved' ticket %}" class = "btn btn-success btn-sm">All Approved</a></span>
+                                <span><a href= "{% url 'dashboard:personalwaiting' ticket %}" class = "btn btn-warning btn-sm">All Waiting</a></span>
+                                <span><a href= "{% url 'dashboard:personalrejected' ticket %}" class = "btn btn-danger btn-sm">All Rejected</a></span>
+                                </section>
+                    </section>
+                  </section>
+            <thead>
+              <tr>
+                <!-- <th scope="col">#</th> -->
+              <th scope="col">Ticket No.</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Start Date</th>
+								<th scope="col">End Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for leave in leave_list %}
+              <tr>
+              <td><a href = "{% url 'dashboard:employeeinfo' leave.Ticket_No %}">{{ leave.Ticket_No }}</a></td>
+                <td>{{ leave.Complete_Name }}</td>
+                {% if leave.leave_type == 'SL( Sick Leave )' %}
+								  <td>SL</td>
+								  {% elif leave.leave_type == 'PL( Privilege Leave )'%}
+								  <td>PL</td>
+								  {% else %}
+								  <td>CL</td>
+								  {% endif %}
+                <!-- <td>{{ leave.leave_type}}</td> -->
+                <td>{{ leave.from_date }}</td>
+								<td>{{ leave.to_date }}</td>
+              {% if leave.status == 0 %}
+                  <td><span class="badge alert-warning">Waiting</span></td>
+              {% elif leave.status == 1 %}
+              <td><span class="badge alert-success">Approved</span></td>
+              {% else %}
+                <td><span class="badge alert-danger">Rejected</span></td>
+              {% endif %}
+                <td> 
+                  <a href="{% url 'dashboard:userleaveview' leave.id %}">
+                <span class = "btn btn-outline-primary btn-sm">VIEW</span>
+                  </a>
+                  
+                </td>
+              </tr>
+
+              {% endfor %}
+
+            </tbody>
+
+        </table>
+        
+  
+      </div>
+
+
+						        </section><!-- /profile-wrappper -->
+                    
+              			</section>
+                  </section>
+                  </class>
+                  
+ {% endblock %}
+
+<script type="text/javascript">
+{% block extrajs%}
+
+{% endblock %}
+</script>

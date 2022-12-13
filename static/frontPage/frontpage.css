@@ -1,0 +1,125 @@
+*{
+    margin  : 0;
+    padding: 0;
+    font-family: 'Times New Roman', Times, serif;
+}
+.container{
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)),url(3.jpg);
+    background-position: center;
+    background-size: cover;
+    box-sizing: border-box;
+    padding-left: 8%;
+    padding-right: 8%;
+}
+.row{
+    display: flex;
+    height: 88%;
+    align-items:center;
+}
+.col{
+    flex-basis: 60%;
+}
+
+h1{
+    color: aliceblue;
+    font-size: 50px;
+    text-align:center;
+}
+
+
+p{
+    color: aliceblue;
+    font-size: 20px;
+    text-align:center;
+}
+
+.card{
+    width: 250px;
+    height: 230px;
+    display: inline-block;
+    border-radius: 10px;
+    padding: 15px 15px;
+    box-sizing: border-box;
+    cursor: pointer;    
+    /* margin: 15px  ; */
+    background-color:rgba(93, 173, 226,0.7);
+    background-position: center;
+    background-size: cover;
+    transition: translate 0.5s ;
+}
+
+
+.sqpdcme{
+    width: 150px;
+    height: 140px;
+    display: inline-block;
+    border-radius: 10px;
+    padding: 15px 15px;
+    box-sizing: border-box;
+    cursor: pointer;
+    /* margin: 15px  ; */
+    background-color:rgba(93, 173, 226,0.7);
+    background-position: center;
+    background-size: cover;
+    transition: translate 0.5s ;
+}
+
+.S{
+    background-color:rgba(3, 171, 249,0.7);
+}
+
+.Q{
+    background-color:rgba(16, 241, 244,0.7);
+}
+
+.P{
+    background-color:rgba(159, 226, 191,0.7);
+}
+
+.D{
+    background-color:rgba(203, 244, 16,0.7);
+}
+
+.C{
+    background-color:rgba(255,87,51,0.7);
+}
+
+.M{
+    background-color:rgba(199,0,57,0.7);
+}
+
+.E{
+    background-color:rgba(87,24,69,0.7);
+}
+
+
+.card1{
+    margin-bottom: 10px;
+}
+
+.weld_shop{
+    background-image: url(WELD_SHOP.jpg);
+}
+
+.paint_shop{
+    background-image: url(PAINT_SHOP.jpg);
+}
+
+.tcf{
+    background-image: url(TCF.jpg);
+}
+
+.engine_shop{
+    background-image: url(POWERTRAIN.jpg);
+}
+
+.card:hover{
+    transform: translateY(-10px);
+}
+
+
+.sqpdcme:hover{
+    transform: translateY(-10px);
+}

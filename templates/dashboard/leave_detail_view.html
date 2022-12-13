@@ -1,0 +1,303 @@
+
+{% extends '_layout.html' %}
+{% load static %}
+{% block title %} {{ title }} {% endblock %}
+
+{% load crispy_forms_tags %}
+
+ {% block navheader %}
+    {% include 'includes/navbar.html' %}
+ {% endblock %}
+
+
+
+  {% block stylesheet %}
+    .rounded-circle-image{
+    border-radius: 50% !important;
+    width:250px;
+    height:250px;
+  }
+
+  .form-wrapper{
+  background:#fff;
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+}
+
+
+.list-group {
+  margin-top: 10px;
+}
+
+span{
+  color: #6f6f6f;
+  font-weight: lighter;
+  font-size: 16px;
+}
+
+
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    font-size:17px;
+}
+
+  #override-start{
+    background:none !important;
+    top: 35% !important;
+    right:13px;
+    color:#000;
+    font-size: 24px;
+
+    }
+
+    .alert-warning{
+        background:#fd7b7b;
+    }
+
+    .alert-success {
+        background-color: #82b72a;
+    }
+
+    .alert-success,.alert-warning{
+        font-size:16px;
+    }
+
+    .employee-name-title{
+    color: #3873b1;
+    font-weight: 600;
+    font-variant: petite-caps;
+    font-size: 3.1rem !important;
+  }
+
+  span,.list-group-item > div{
+  font-variant: petite-caps;
+}
+
+
+.panel-default>.panel-heading {
+    color: #fff !important;
+    background-color: #2d88a9 !important;
+}
+
+.panel-title a:hover{
+  color:#e6e4e4;
+}
+
+.panel-title a:active{
+  color:#e6e4e4;
+}
+
+.panel-title a:focus{
+  color:#e6e4e4;
+}
+
+
+
+  {% endblock %}
+
+
+  
+
+ {% block content %}
+        <section class="content">
+            <section class="container-fluid">
+              <section class="row">
+                <section class="col col-lg-12">
+                  <span><a href="{{request.META.HTTP_REFERER|escape}}" class = "btn btn-danger btn-sm">Back</a></span>
+                </section>
+              </section>
+                <section class="form-wrapper">
+                  <section class="row">
+                    <section class="col col-sm-8 offset-sm-2">
+
+                        {% if  messages %}
+                                {% for message in messages %}
+                                 <div {% if message.tags %} class="{{ message.tags}}"{% endif %}>
+                                     {{ message }}
+                                     <!-- <button type="button" class="close" id = "override-start"data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                     </button> -->
+                 
+                                 </div>
+                                {% endfor %}
+                        {% endif %}
+
+                    </section>
+                </section>
+                
+                    <section class="row">
+                        <section class="col-lg-12 col-md-12 col-sm-12 text-center space-margin">
+                            <h3 class="title-h3"><a href="{% url 'dashboard:employeeinfo' employee.Ticket_No %}">{{ employee.Complete_Name }}</a></h3>
+                        </section>
+                    </section>
+
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Ticket No.</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Line</th>
+                          <th scope="col">Start Date</th>
+                          <th scope="col">End Date</th>
+                          <th scope="col">Duration</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">{{ employee.Ticket_No }}</th>
+                          <td>{{ employee.Complete_Name }}</td>
+                          <td>{{ employee.Cost_Center_Name }}</td>
+                          <td>{{ leave.from_date }}</td>
+                          <td>{{ leave.to_date }}</td>
+                          <td>{{ leave.leave_days }} Days(s) {Holidays Included}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Type</th>
+                          {% if leave.leave_type == 'CL( Casual Leave )' %}
+                            <th scope="col">Casual Leave Quota</th>
+                          {% elif leave.leave_type == 'PL( Privilege Leave )' %}
+                            <th scope="col">Privilege Leave Quota</th>
+                          {% else %}
+                          <th scope="col">Sick Leave Quota</th>
+                          {% endif %}
+                          {% if leave.is_rejected %}
+                            <th scope="col">Reason</th>
+                          {% endif %}
+                          {% if leave.status == 1 %}
+                            <th scope="col">Approved By</th>
+                          {% elif leave.status == 2 %}
+                            <th scope="col">Rejected By</th>
+                          {% endif %}
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{leave.leave_type}}</td>
+                          <td scope = "col">
+                          {% if leave.leave_type == 'CL( Casual Leave )' %}
+                           <div>{{ quota.total_available_cl}} / {{ quota.total_assigned_cl}}</div>
+                          {% elif leave.leave_type == 'PL( Privilege Leave )' %}
+                          <div>{{ quota.total_available_pl}} / {{ quota.total_assigned_pl}}</div>
+                          {%else%}
+                          <div>{{ quota.total_available_sl}} / {{ quota.total_assigned_sl}}</div>
+                          {% endif %}
+                          </td>
+                          {% if leave.is_rejected %}
+                            <td scope="col">{{leave.reason}}</td>
+                          {% endif %}
+                          {% if leave.status == 1 or leave.status == 2 %}
+                            <td scope="col">{{leave.action_by}}</td>
+                          {% endif %}
+                          <td>
+                            {% if leave.status == 0 %}
+                            <span class="badge alert-warning">Waiting</span>
+                            {% elif leave.status == 1 %}
+                            <span class="badge alert-success">Approved</span>
+                            {%else%}
+                            <span class="badge alert-danger">Rejected</span>
+                            {% endif %}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+
+                             
+                            <span style="font-size: 13px;padding-left: 1rem;" class="pull-left">Created - {{ leave.applied_on_date }}</span>
+
+
+                            {% if request.user.is_supervisor or request.user.is_shop_incharge %}
+
+                                  <section class="row pb-3">
+                                    <section class="col col-lg-12 col-sm-12 col-lg-offset-12 text-center">
+                                        {%if leave.status == 1 %}
+                                        <a href="{% url 'dashboard:userleaveunapprove' leave.id %}" class="btn btn-warning" name='unapprove'>REVERT</a>
+                                        {% else %}
+                                        <a href="{% url 'dashboard:userleaveapprove' leave.id %}" class="btn btn-success" name='approve'>APPROVE</a>
+                                        {% endif %}
+                                        {% if leave.status != 2 %}
+                                            
+                                          <!-- Button trigger modal -->
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                              REJECT
+                                            </button>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                              <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                  <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Add Reason</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                    <div class="alert alert-danger" style="display:None;" role="alert" id="validationAlert">
+
+                                                    </div>
+                                                    <div class="mb-3">
+                                                      <input type="text" class="form-control" id="reason" aria-describedby="reason">
+                                                      <div id="reason" class="form-text">Add reason in 2-3 words.</div>
+                                                    </div>
+                                                  
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <!-- <a href=" url 'dashboard:reject' leave.id" class="btn btn-danger" name='reject'>Reject</a> -->
+                                                    <button type="button" id = "reason" class="btn btn-danger" onclick = "reject()">Reject</button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        {% endif %}
+                                    </section>
+                                  </section>
+              
+                            {% endif %}       
+
+                                  
+
+                </section>
+
+            </section> <!-- /container --> 
+        </section>
+ 
+ <script>
+
+  function reject() {
+    var reason = document.getElementById("reason").value;
+    if(!reason){
+      $("#validationAlert").text('Please Enter a reason!');
+      $("#validationAlert").css("display","");
+  }
+    else if(reason){
+      $.ajax({
+          url:"{% url 'dashboard:reject' leave.id %}",
+          data:{
+              "reason":reason,
+          },
+          success:function(data){
+            $('#exampleModal').modal('hide');
+            if(data['x'] == 1){
+            location.replace("{% url 'dashboard:leaveslist' %}")
+            }else{
+              location.replace("{% url 'dashboard:leaveslist' %}")
+            }
+          }
+      });
+  }
+  }
+  </script>
+ {% endblock %}
