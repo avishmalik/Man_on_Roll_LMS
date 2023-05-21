@@ -134,8 +134,11 @@ span{
                 </section>
                 
                     <section class="row">
+                      <section class="col-lg-12 col-md-12 col-sm-12 text-center space-margin">
+                        <h3 class="title-h3">Leave Details</h3>
+                    </section>
                         <section class="col-lg-12 col-md-12 col-sm-12 text-center space-margin">
-                            <h3 class="title-h3"><a href="{% url 'dashboard:employeeinfo' employee.Ticket_No %}">{{ employee.Complete_Name }}</a></h3>
+                            <h4 class="title-h3"><a href="{% url 'dashboard:employeeinfo' employee.Ticket_No %}">{{ employee.Complete_Name }}</a></h4>
                         </section>
                     </section>
 
@@ -172,13 +175,13 @@ span{
                           {% else %}
                           <th scope="col">Sick Leave Quota</th>
                           {% endif %}
-                          {% if leave.is_rejected %}
-                            <th scope="col">Reason</th>
-                          {% endif %}
                           {% if leave.status == 1 %}
                             <th scope="col">Approved By</th>
                           {% elif leave.status == 2 %}
                             <th scope="col">Rejected By</th>
+                          {% endif %}
+                          {% if leave.is_rejected %}
+                            <th scope="col">Reason</th>
                           {% endif %}
                           <th scope="col">Status</th>
                         </tr>
@@ -195,11 +198,11 @@ span{
                           <div>{{ quota.total_available_sl}} / {{ quota.total_assigned_sl}}</div>
                           {% endif %}
                           </td>
-                          {% if leave.is_rejected %}
-                            <td scope="col">{{leave.reason}}</td>
-                          {% endif %}
                           {% if leave.status == 1 or leave.status == 2 %}
                             <td scope="col">{{leave.action_by}}</td>
+                          {% endif %}
+                          {% if leave.is_rejected %}
+                            <td scope="col">{{leave.reason}}</td>
                           {% endif %}
                           <td>
                             {% if leave.status == 0 %}
